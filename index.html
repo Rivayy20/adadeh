@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Pacifico&display=swap" rel="stylesheet" />
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #121212;
+        color: #fff;
+        font-family: 'Poppins', sans-serif; /* Poppins for body text */
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        animation: fadeIn 2s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #1e1e1e;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0px 0px 15px rgba(255, 105, 180, 0.5);
+        text-align: center;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        opacity: 0; /* Start with opacity 0 for animation */
+        animation: scaleUp 1s ease-in-out forwards; /* Apply scale-up animation */
+      }
+
+      @keyframes scaleUp {
+        from {
+          transform: translate(-50%, -50%) scale(0.8); /* Start small */
+          opacity: 0;
+        }
+        to {
+          transform: translate(-50%, -50%) scale(1); /* End with full scale */
+          opacity: 1;
+        }
+      }
+
+      .input-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .password-display {
+        font-size: 16px; /* Smaller font size */
+        margin-bottom: 10px;
+        padding: 10px; /* Reduced padding */
+        width: 70%;
+        max-width: 250px; /* Smaller width */
+        height: 35px; /* Reduced height */
+        border: 2px solid #ff4081;
+        border-radius: 10px;
+        text-align: center;
+        background: #252525;
+        color: #fff;
+        font-family: monospace;
+        letter-spacing: 5px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-top: 20px;
+        width: 100%;
+        max-width: 350px;
+      }
+      .key {
+        width: 60px;
+        height: 60px;
+        background: #ff4081;
+        border: none;
+        border-radius: 15px;
+        color: white;
+        font-size: 22px;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.2s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .key:hover {
+        background: #e91e63;
+        transform: scale(1.1);
+      }
+      .submit-btn {
+        margin-top: 20px;
+        padding: 15px 25px;
+        background: #ff4081;
+        color: white;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background 0.3s, transform 0.2s;
+      }
+      .submit-btn:hover {
+        background: #e91e63;
+        transform: scale(1.1);
+      }
+
+      /* Responsivitas pada layar kecil */
+      @media screen and (max-width: 600px) {
+        .key {
+          width: 70px;
+          height: 70px;
+          font-size: 24px;
+        }
+        .password-display {
+          width: 85%;
+          font-size: 14px; /* Adjust font size on smaller screens */
+        }
+        .container {
+          padding: 15px;
+        }
+        .submit-btn {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="password-container">
+      <h2 style="font-family: 'Pacifico', cursive;">Enter Your Password</h2> <!-- Pacifico for title -->
+      <div class="input-box">
+        <div class="password-display" id="password" aria-label="Password input"></div>
+        <div class="keypad">
+          <button class="key" onclick="addDigit('1')" aria-label="Number 1">1</button>
+          <button class="key" onclick="addDigit('2')" aria-label="Number 2">2</button>
+          <button class="key" onclick="addDigit('3')" aria-label="Number 3">3</button>
+          <button class="key" onclick="addDigit('4')" aria-label="Number 4">4</button>
+          <button class="key" onclick="addDigit('5')" aria-label="Number 5">5</button>
+          <button class="key" onclick="addDigit('6')" aria-label="Number 6">6</button>
+          <button class="key" onclick="addDigit('7')" aria-label="Number 7">7</button>
+          <button class="key" onclick="addDigit('8')" aria-label="Number 8">8</button>
+          <button class="key" onclick="addDigit('9')" aria-label="Number 9">9</button>
+          <button class="key" onclick="clearPassword()" aria-label="Clear password">*</button>
+          <button class="key" onclick="addDigit('0')" aria-label="Number 0">0</button>
+          <button class="key" onclick="removeLastDigit()" aria-label="Remove last digit">#</button>
+        </div>
+        <button class="submit-btn" onclick="checkPassword()">Submit</button>
+      </div>
+    </div>
+
+    <script>
+      let attempts = 0;
+      const correctPassword = '201306';
+
+      function addDigit(digit) {
+        let passDisplay = document.getElementById('password');
+        passDisplay.innerText += '●';
+        passDisplay.dataset.actual = (passDisplay.dataset.actual || '') + digit;
+      }
+
+      function removeLastDigit() {
+        let passDisplay = document.getElementById('password');
+        passDisplay.innerText = passDisplay.innerText.slice(0, -1);
+        passDisplay.dataset.actual = passDisplay.dataset.actual.slice(0, -1);
+      }
+
+      function clearPassword() {
+        let passDisplay = document.getElementById('password');
+        passDisplay.innerText = '';
+        passDisplay.dataset.actual = '';
+      }
+
+      function checkPassword() {
+        let input = document.getElementById('password').dataset.actual;
+        if (input === correctPassword) {
+          Swal.fire({
+            title: 'Berhasil!',
+            text: 'Welcome Mutiara Zahra Grismawati!',
+            icon: 'success',
+          }).then(() => {
+            window.location.href = 'birthday.html';
+          });
+        } else {
+          attempts++;
+          if (attempts >= 3) {
+            Swal.fire({
+              title: 'Clue',
+              text: 'Ingat tanggal penting kita: HariHariTahun',
+              icon: 'info',
+            }).then(() => {
+              clearPassword();
+            });
+          } else {
+            Swal.fire({
+              title: 'Error!',
+              text: 'Password salah!',
+              icon: 'error',
+            }).then(() => {
+              clearPassword();
+            });
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
